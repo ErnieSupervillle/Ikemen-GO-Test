@@ -1463,6 +1463,10 @@ func (c *Compiler) afterImageSub(is IniSection,
 		afterImage_framegap, VT_Int, 1, false); err != nil {
 		return err
 	}
+	if err := c.paramValue(is, sc, prefix+"blur",
+		afterImage_blur, VT_Int, 1, false); err != nil {
+		return err
+	}
 	if err := c.paramValue(is, sc, prefix+"palcolor",
 		afterImage_palcolor, VT_Int, 1, false); err != nil {
 		return err

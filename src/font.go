@@ -559,6 +559,7 @@ func (f *Fnt) DrawText(txt string, x, y, xscl, yscl, rxadd float32, rot Rotation
 		fLength:        0,
 		xOffset:        0,
 		yOffset:        0,
+		blur:           0,
 	}
 
 	for _, c := range txt {

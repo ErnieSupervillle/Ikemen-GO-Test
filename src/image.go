@@ -1249,6 +1249,7 @@ func (s *Sprite) Draw(x, y, xscale, yscale float32, rxadd float32, rot Rotation,
 		fLength:        0,
 		xOffset:        -xscale * float32(s.Offset[0]),
 		yOffset:        -yscale * float32(s.Offset[1]),
+		blur:           0,
 	}
 	RenderSprite(rp)
 }

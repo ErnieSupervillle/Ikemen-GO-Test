@@ -1756,6 +1756,7 @@ func (s *System) action() {
 			projection:   0,
 			fLength:      0,
 			window:       [4]float32{0, 0, 0, 0},
+			blur:         0,
 		})
 		if s.superanim.loopend {
 			s.superanim = nil // Not allowed to loop

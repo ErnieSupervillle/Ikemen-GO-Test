@@ -683,7 +683,7 @@ func (a *Animation) drawSub1(angle, facing float32) (h, v, agl float32) {
 
 func (a *Animation) Draw(window *[4]int32, x, y, xcs, ycs, xs, xbs, ys,
 	rxadd float32, rot Rotation, rcx float32, pfx *PalFX, old bool, facing float32,
-	airOffsetFix [2]float32, projectionMode int32, fLength float32, color uint32, isReflection bool) {
+	airOffsetFix [2]float32, projectionMode int32, fLength float32, blur float32, color uint32, isReflection bool) {
 
 	// Skip blank animations
 	if a == nil || a.isBlank() {
@@ -781,13 +781,14 @@ func (a *Animation) Draw(window *[4]int32, x, y, xcs, ycs, xs, xbs, ys,
 		fLength:        fLength * sys.heightScale,
 		xOffset:        xoff * sys.widthScale,
 		yOffset:        yoff * sys.heightScale,
+		blur:           blur,
 	}
 
 	RenderSprite(rp)
 }
 
 func (a *Animation) ShadowDraw(window *[4]int32, x, y, xscl, yscl, vscl, rxadd float32, rot Rotation,
-	pfx *PalFX, old bool, color uint32, alpha int32, facing float32, airOffsetFix [2]float32, projectionMode int32, fLength float32) {
+	pfx *PalFX, old bool, blur float32, color uint32, alpha int32, facing float32, airOffsetFix [2]float32, projectionMode int32, fLength float32) {
 
 	// Skip blank shadows
 	if a == nil || a.isBlank() {
@@ -834,6 +835,7 @@ func (a *Animation) ShadowDraw(window *[4]int32, x, y, xscl, yscl, vscl, rxadd f
 		fLength:        fLength,
 		xOffset:        xoff,
 		yOffset:        yoff,
+		blur:           blur,
 	}
 
 	// TODO: This is redundant now that rp.tint is used to colorise the shadow
@@ -943,6 +945,7 @@ type SprData struct {
 	fLength      float32
 	window       [4]float32
 	xshear       float32
+	blur         float32
 }
 
 func (sd *SprData) isBlank() bool {
@@ -1030,7 +1033,7 @@ func (dl DrawList) draw(cameraX, cameraY, cameraScl float32) {
 
 		s.anim.Draw(drawwindow, pos[0]-xsoffset, pos[1], cs, cs, s.scl[0], s.scl[0],
 			s.scl[1], xshear, s.rot, float32(sys.gameWidth)/2, s.fx, s.oldVer, s.facing,
-			s.airOffsetFix, s.projection, s.fLength, 0, false)
+			s.airOffsetFix, s.projection, s.fLength, s.blur, 0, false)
 
 		sys.brightness = ob
 	}
@@ -1234,7 +1237,7 @@ func (sl ShadowList) draw(x, y, scl float32) {
 			sys.cam.GroundLevel()+(sys.cam.Offset[1]-es[1])-y-(s.pos[1]*yscale-offsetY)*scl,
 			scl*s.scl[0], scl*-s.scl[1],
 			yscale, xshear, rot,
-			s.fx, s.oldVer, uint32(color), intensity, s.facing, s.airOffsetFix, projection, fLength)
+			s.fx, s.oldVer, s.blur, uint32(color), intensity, s.facing, s.airOffsetFix, projection, fLength)
 	}
 }
 
@@ -1388,7 +1391,7 @@ func (sl ShadowList) drawReflection(x, y, scl float32) {
 			(sys.cam.GroundLevel()+sys.cam.Offset[1]-es[1])/scl-y/scl-(s.pos[1]*yscale-offsetY),
 			scl, scl, s.scl[0], s.scl[0],
 			-s.scl[1]*yscale, xshear, rot, float32(sys.gameWidth)/2,
-			s.fx, s.oldVer, s.facing, s.airOffsetFix, projection, fLength, color, true)
+			s.fx, s.oldVer, s.facing, s.airOffsetFix, projection, fLength, s.blur, color, true)
 	}
 }
 
@@ -1459,7 +1462,7 @@ func (a *Anim) Draw() {
 	if !sys.frameSkip {
 		a.anim.Draw(&a.window, a.x+float32(sys.gameWidth-320)/2,
 			a.y+float32(sys.gameHeight-240), 1, 1, a.xscl, a.xscl, a.yscl,
-			0, Rotation{}, 0, a.palfx, false, 1, [2]float32{1, 1}, 0, 0, 0, false)
+			0, Rotation{}, 0, a.palfx, false, 1, [2]float32{1, 1}, 0, 0, 0, 0, false)
 	}
 }
 

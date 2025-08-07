@@ -6499,6 +6499,7 @@ const (
 	afterImage_palpostbright
 	afterImage_paladd
 	afterImage_palmul
+	afterImage_blur
 	afterImage_ignorehitpause
 	afterImage_last = iota + palFX_last + 1 - 1
 	afterImage_redirectid
@@ -6575,6 +6576,8 @@ func (sc afterImage) runSub(c *Char, ai *AfterImage, paramID byte, exp []Bytecod
 				ai.mul[2] = exp[2].evalF(c)
 			}
 		}
+	case afterImage_blur:
+		ai.blur = exp[0].evalI(c)
 	case afterImage_ignorehitpause:
 		ai.ignorehitpause = exp[0].evalB(c)
 	}
