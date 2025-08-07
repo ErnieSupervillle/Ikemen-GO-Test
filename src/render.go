@@ -172,6 +172,7 @@ type RenderParams struct {
 	fLength        float32 // Focal length
 	xOffset        float32
 	yOffset        float32
+	blur           float32
 }
 
 func (rp *RenderParams) IsValid() bool {
@@ -462,6 +463,7 @@ func RenderSprite(rp RenderParams) {
 		gfx.SetUniformFv("mult", pmul[:])
 		gfx.SetUniformFv("tint", tint[:])
 		gfx.SetUniformF("alpha", a)
+		gfx.SetUniformF("blur", rp.blur)
 
 		rmTileSub(modelview, rp)
 

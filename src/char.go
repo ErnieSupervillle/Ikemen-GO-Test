@@ -201,7 +201,7 @@ func (cr ClsnRect) draw(trans int32) {
 			sys.clsnSpr.Tex, paltex, sys.clsnSpr.Size,
 			-c[0] * sys.widthScale, -c[1] * sys.heightScale, notiling,
 			c[2] * sys.widthScale, c[2] * sys.widthScale, c[3] * sys.heightScale, 1, 0,
-			1, 1, Rotation{c[6], 0, 0}, 0, trans, -1, nil, &sys.scrrect, c[4], c[5], 0, 0, 0, 0,
+			1, 1, Rotation{c[6], 0, 0}, 0, trans, -1, nil, &sys.scrrect, c[4], c[5], 0, 0, 0, 0, 0,
 		}
 		RenderSprite(params)
 	}
@@ -1013,6 +1013,7 @@ type AfterImage struct {
 	mul            [3]float32
 	timegap        int32
 	framegap       int32
+	blur           int32
 	alpha          [2]int32
 	palfx          []PalFX
 	imgs           [64]aimgImage
@@ -1029,6 +1030,7 @@ func newAfterImage() *AfterImage {
 	for i := range ai.palfx {
 		ai.palfx[i].enable, ai.palfx[i].negType = true, true
 	}
+	ai.blur = 0
 	ai.clear()
 	return ai
 }
@@ -1055,6 +1057,7 @@ func (ai *AfterImage) clear() {
 	ai.reccount = 0
 	ai.timecount = 0
 	ai.ignorehitpause = true
+	ai.blur = 0
 }
 
 func (ai *AfterImage) setPalColor(color int32) {
@@ -1221,6 +1224,7 @@ func (ai *AfterImage) recAndCue(sd *SprData, rec bool, hitpause bool, layer int3
 				fLength:      img.fLength,
 				window:       sd.window,
 				xshear:       sd.xshear,
+				blur:         float32(ai.blur),
 			})
 			// Afterimages don't cast shadows or reflections
 		}
@@ -1603,6 +1607,7 @@ func (e *Explod) update(oldVer bool, playerNo int) {
 		fLength:      fLength,
 		window:       ewin,
 		xshear:       xshear,
+		blur:         0,
 	}
 	sprs.add(sd)
 
@@ -2243,6 +2248,7 @@ func (p *Projectile) cueDraw(oldVer bool) {
 			fLength:      fLength,
 			window:       pwin,
 			xshear:       p.xshear,
+			blur:         0,
 		}
 		p.aimg.recAndCue(sd, sys.tickNextFrame() && notpause, false, p.layerno)
 		sprs.add(sd)
@@ -10276,6 +10282,7 @@ func (c *Char) cueDraw() {
 			fLength:      fLength,
 			xshear:       c.xshear,
 			window:       cwin,
+			blur:         0,
 		}
 		if !c.csf(CSF_trans) {
 			sd.alpha[0] = -1
